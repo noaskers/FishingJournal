@@ -1,0 +1,27 @@
+database:
+  use: sqlite
+
+rarity-gui:
+  title: "<gradient:gold:yellow>Fish Stats - <white>{rarity}</white></gradient>"
+  rows: 6
+  default-fish-material: TROPICAL_FISH
+
+  fish-item:
+    name: "<aqua><bold>{fish_name}</bold></aqua>"
+    lore:
+      - "<gold><bold>Personal Stats</bold></gold>"
+      - "<yellow>• Longest: <white>{personal_largest} cm</white></yellow>"
+      - "<yellow>• Shortest: <white>{personal_smallest} cm</white></yellow>"
+      - "<yellow>• Times Caught: <white>{times_caught}</white></yellow>"
+      - "<yellow>• First Caught: <white>{first_caught}</white></yellow>"
+      - "<gold><bold>Global Stats</bold></gold>"
+      - "<yellow>• Longest: <white>{global_largest} cm</white> <gray>({global_largest_owner})</gray></yellow>"
+      - "<yellow>• Shortest: <white>{global_smallest} cm</white> <gray>({global_smallest_owner})</gray></yellow>"
+      - "<yellow>• Most Caught: <white>{global_most_caught}</white> <gray>({global_most_caught_owner})</gray></yellow>"
+
+  back-button:
+    slot: 53
+    material: ARROW
+    display-name: "<red><bold>⬅ Back</bold></red>"
+    lore:
+      - "<gray>Click to return to main menu</gray>"

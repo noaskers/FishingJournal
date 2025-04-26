@@ -1,0 +1,15 @@
+name: FishingJournal
+version: '0.1-ALPHA'
+main: nl.svendev.fishingJournal.FishingJournal
+api-version: '1.21'
+authors: [ Sven ]
+depend: [ EvenMoreFish ]
+commands:
+  fishingjournal:
+    description: View your fish stats
+    usage: /fishstats
+    aliases: [ fs ]
+  fishreload:
+    description: Reload the plugin
+    usage: /fishreload
+    aliases: [ fr ]
