@@ -31,7 +31,7 @@ public class FishLoader {
     private void loadAllFish() {
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             FishManager fishManager = FishManager.getInstance();
-            System.out.println("FishManager instance: " + fishManager);
+           // System.out.println("FishManager instance: " + fishManager);
 
             if (fishManager == null) {
                 System.out.println("FishManager is null!");
@@ -39,7 +39,7 @@ public class FishLoader {
             }
 
             Map<String, Rarity> rarityMap = fishManager.getRarityMap();
-            System.out.println("RarityMap: " + rarityMap);
+         //   System.out.println("RarityMap: " + rarityMap);
 
             if (rarityMap == null || rarityMap.isEmpty()) {
                 System.out.println("RarityMap is null or empty!");
@@ -47,13 +47,13 @@ public class FishLoader {
             }
 
             for (Map.Entry<String, Rarity> entry : rarityMap.entrySet()) {
-                System.out.println("Processing rarity key: " + entry.getKey());
+                //System.out.println("Processing rarity key: " + entry.getKey());
                 Rarity rarity = entry.getValue();
-                System.out.println("Rarity ID: " + rarity.getId() + ", Fish count: " + rarity.getFishList().size());
+                //System.out.println("Rarity ID: " + rarity.getId() + ", Fish count: " + rarity.getFishList().size());
 
                 Map<String, ItemStack> fishItems = new HashMap<>();
                 for (Fish fish : rarity.getFishList()) {
-                    System.out.println("Adding fish: " + fish.getName());
+                    //System.out.println("Adding fish: " + fish.getName());
                     ItemStack fishItem = fish.getFactory().createItem(null, -1);
                     fishItems.put(fish.getName(), fishItem); // Store original name as key
                 }
@@ -72,8 +72,8 @@ public class FishLoader {
 
         rarity = normalizeKey(rarity);
 
-        System.out.println("Accessing rarity: " + rarity);
-        System.out.println("Current fishItemsByRarity keys: " + fishItemsByRarity.keySet());
+//        System.out.println("Accessing rarity: " + rarity);
+//        System.out.println("Current fishItemsByRarity keys: " + fishItemsByRarity.keySet());
 
         if (!discovered) {
             return getUndiscoveredItem();
@@ -81,7 +81,7 @@ public class FishLoader {
 
         Map<String, ItemStack> fishItems = fishItemsByRarity.get(rarity);
         if (fishItems != null) {
-            System.out.println("Available fish for rarity '" + rarity + "': " + fishItems.keySet());
+            //System.out.println("Available fish for rarity '" + rarity + "': " + fishItems.keySet());
             // Perform case-insensitive lookup
             for (Map.Entry<String, ItemStack> entry : fishItems.entrySet()) {
                 if (entry.getKey().equalsIgnoreCase(fishName)) {
@@ -93,7 +93,7 @@ public class FishLoader {
             System.out.println("Fish name not found: " + fishName);
         } else {
             System.out.println("Rarity not found: " + rarity);
-            logAllRarities();
+          //  logAllRarities();
         }
 
         return getFallbackItem(fishName, discovered);
@@ -124,10 +124,10 @@ public class FishLoader {
                 .toList();
     }
 
-    public void logAllRarities() {
+ /*   public void logAllRarities() {
         List<String> rarities = getAllRarities();
         System.out.println("Rarities from EvenMoreFish plugin: " + rarities);
-    }
+    } */
 
     public List<String> getFishNamesByRarity(String rarity) {
         rarity = normalizeKey(rarity);

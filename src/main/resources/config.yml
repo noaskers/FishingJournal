@@ -2,26 +2,104 @@ database:
   use: sqlite
 
 rarity-gui:
-  title: "<gradient:gold:yellow>Fish Stats - <white>{rarity}</white></gradient>"
+  title: "{rarity} | Vis handboek"
   rows: 6
   default-fish-material: TROPICAL_FISH
+  default-uncaught-material: IRON_BARS
 
   fish-item:
-    name: "<aqua><bold>{fish_name}</bold></aqua>"
+    name: "<#00bfff>{fish_name}</#00bfff>"
     lore:
-      - "<gold><bold>Personal Stats</bold></gold>"
-      - "<yellow>• Longest: <white>{personal_largest} cm</white></yellow>"
-      - "<yellow>• Shortest: <white>{personal_smallest} cm</white></yellow>"
-      - "<yellow>• Times Caught: <white>{times_caught}</white></yellow>"
-      - "<yellow>• First Caught: <white>{first_caught}</white></yellow>"
-      - "<gold><bold>Global Stats</bold></gold>"
-      - "<yellow>• Longest: <white>{global_largest} cm</white> <gray>({global_largest_owner})</gray></yellow>"
-      - "<yellow>• Shortest: <white>{global_smallest} cm</white> <gray>({global_smallest_owner})</gray></yellow>"
-      - "<yellow>• Most Caught: <white>{global_most_caught}</white> <gray>({global_most_caught_owner})</gray></yellow>"
+      - ""
+      - "<yellow>● <white>Grooste lengte: </white>{personal_largest}cm</yellow>"
+      - "<yellow>● <white>Kleinste lengte: </white>{personal_smallest}cm</yellow>"
+      - "<yellow>● <white>Gevangen: </white>{times_caught}x</yellow>"
+      - "<yellow>● <white>Gevonden op: </white>{first_caught}</yellow>"
+      - ""
+      - "<#00bfff>Server globaal:</#00bfff>"
+      - "<yellow>● <white>Langste: </white>{global_largest}cm <gray>({global_largest_owner})</gray></yellow>"
+      - "<yellow>● <white>Kleinste: </white>{global_smallest}cm <gray>({global_smallest_owner})</gray></yellow>"
+      - "<yellow>● <white>Meeste: </white>{global_most_caught}x <gray>({global_most_caught_owner})</gray></yellow>"
+  uncaught-item:
+    name: "<red>Nog niet gevangen...</red>"
+    lore:
+      - ""
+      - "<white>Vang deze vis met een hengel</white>"
+      - "<white>om hem hier te ontgrendelen.</white>"
+      - ""
+      - "<red>→ Succes met vissen!</red>"
 
   back-button:
-    slot: 53
-    material: ARROW
-    display-name: "<red><bold>⬅ Back</bold></red>"
+    slot: 49
+    material: CHEST_MINECART
+    display-name: "<#e6e4dd>(↓) <white>Sluiten</white></#e6e4dd>"
+    lore: []
+  filler:
+    slot: 0,1,2,3,4,5,6,7,8,9
+    material: GRAY_STAINED_GLASS_PANE
+    display-name: "<#e6e4dd></#e6e4dd>"
+    lore: []
+
+fish-gui:
+  title: "Fish journal"
+  rows: 6
+  default-rarity-item: TROPICAL_FISH
+  default-uncaught-rarity-material: IRON_BARS
+
+  close-button:
+    slot: 49
+    material: CHEST_MINECART
+    display-name: "<#e6e4dd>(↓) <white>Sluiten</white></#e6e4dd>"
+    lore: [ ]
+  custom-item1:
+    slot: 31
+    name: "<red><b>BINNENKORT</b></red>"
+    lore: [ ]
+  custom-item2:
+    slot: 32
+    name: "<red><b>BINNENKORT</b></red>"
+    lore: [ ]
+  custom-item3:
+    slot: 33
+    name: "<red><b>BINNENKORT</b></red>"
+    lore: [ ]
+  filler:
+    slot: 0,1,2,3,4,5,6,7,8,9
+    material: GRAY_STAINED_GLASS_PANE
+    display-name: "<#e6e4dd></#e6e4dd>"
+    lore: [ ]
+
+  uncaught-rarity:
+    name: "<red>Niet gevonden</red>"
     lore:
-      - "<gray>Click to return to main menu</gray>"
+      - ""
+      - "<white>Je hebt nog geen vis gevangen.</white>"
+      - "<white>In deze zeldzaamheid.</white>"
+      - ""
+      - "<red>→ Succes met vissen!</red>"
+  rarity:
+    common:
+      material: COD
+      slot: 20
+      display-name: "<green><bold>Common</bold></green>"
+      lore:
+        - "<gray>These fish are very common</gray>"
+    uncommon:
+      material: PUFFERFISH
+      slot: 21
+      display-name: "<yellow><bold>Uncommon</bold></yellow>"
+      lore:
+        - "<gray>These fish are somewhat rare</gray>"
+    rare:
+      material: TROPICAL_FISH
+      slot: 23
+      display-name: "<aqua><bold>Rare</bold></aqua>"
+      lore:
+        - "<gray>These fish are quite rare</gray>"
+    legendary:
+      material: SALMON
+      slot: 24
+      display-name: "<red><bold>Legendary</bold></red>"
+      lore:
+        - "<gray>These fish are extremely rare</gray>"
+

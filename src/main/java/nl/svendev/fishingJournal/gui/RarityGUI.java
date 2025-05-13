@@ -43,16 +43,17 @@ public class RarityGUI {
                     return;
                 }
 
+                // === LOGGING ===
+                plugin.getLogger().info("Opening RarityGUI for player: " + player.getName() + ", rarity: " + rarity);
+                plugin.getLogger().info("Fish names by rarity (" + rarity + "): " + allFish);
+                plugin.getLogger().info("Fish stats from database: " + fishStats.keySet());
+
                 int rows = config.getInt("rows", 6);
 
-// Get the title string from config, replace {rarity} with actual rarity
                 String titleString = config.getString("title", "<gradient:gold:yellow>Fish Stats - {rarity}</gradient>");
                 titleString = titleString.replace("{rarity}", rarity);
-
-// Now deserialize it properly
                 Component title = miniMessage.deserialize(titleString);
 
-// Create the GUI
                 Gui gui = Gui.gui()
                         .title(title)
                         .rows(rows)
@@ -64,10 +65,8 @@ public class RarityGUI {
                 // Process custom items
                 for (String key : config.getKeys(false)) {
                     if (key.equals("title") || key.equals("rows") ||
-                            key.equals("default-fish-material") || key.equals("fish-item")) {
-                        continue;
-                    }
-                    if (key.equals("back-button")) continue;
+                            key.equals("default-fish-material") || key.equals("fish-item") ||
+                            key.equals("back-button")) continue;
 
                     ConfigurationSection itemConfig = config.getConfigurationSection(key);
                     if (itemConfig != null && itemConfig.contains("slot") && itemConfig.contains("material")) {
@@ -79,24 +78,45 @@ public class RarityGUI {
                 int slot = 0;
                 for (String fishName : allFish) {
                     Map<String, Object> stats = fishStats.get(fishName);
+
                     boolean discovered = stats != null || player.hasPermission("fishingjournal.viewall");
 
-                    ItemStack item = discovered
-                            ? fishLoader.getFishItem(fishName, rarity, true)
-                            : new ItemStack(Material.valueOf(config.getString("default-fish-material", "TROPICAL_FISH")));
-
-                    // Process name with MiniMessage and remove italics
-                    String nameTemplate = config.getString("fish-item.name", "<aqua>{fish_name}");
-                    Component name = miniMessage.deserialize(
-                                    nameTemplate.replace("{fish_name}", fishName))
-                            .decoration(TextDecoration.ITALIC, false);
-
-                    // Process lore with MiniMessage and remove italics
+                    ItemStack item;
+                    Component name;
                     List<Component> lore = new ArrayList<>();
-                    for (String line : config.getStringList("fish-item.lore")) {
-                        lore.add(miniMessage.deserialize(
-                                        applyPlaceholders(line, fishName, stats))
-                                .decoration(TextDecoration.ITALIC, false));
+
+                    if (discovered) {
+                        item = fishLoader.getFishItem(fishName, rarity, true);
+
+                        String nameTemplate = config.getString("fish-item.name", "<aqua>{fish_name}");
+                        name = miniMessage.deserialize(
+                                        nameTemplate.replace("{fish_name}", fishName))
+                                .decoration(TextDecoration.ITALIC, false);
+
+                        for (String line : config.getStringList("fish-item.lore")) {
+                            lore.add(miniMessage.deserialize(
+                                            applyPlaceholders(line, fishName, stats))
+                                    .decoration(TextDecoration.ITALIC, false));
+                        }
+                    } else {
+                        ConfigurationSection uncaughtConfig = config.getConfigurationSection("uncaught-item");
+                        if (uncaughtConfig != null) {
+                            item = new ItemStack(Material.valueOf(uncaughtConfig.getString("material", "IRON_BARS")));
+
+                            String nameTemplate = uncaughtConfig.getString("name", "<red>{fish_name}");
+                            name = miniMessage.deserialize(
+                                            nameTemplate.replace("{fish_name}", fishName))
+                                    .decoration(TextDecoration.ITALIC, false);
+
+                            for (String line : uncaughtConfig.getStringList("lore")) {
+                                lore.add(miniMessage.deserialize(line)
+                                        .decoration(TextDecoration.ITALIC, false));
+                            }
+                        } else {
+                            item = new ItemStack(Material.IRON_BARS);
+                            name = Component.text(fishName).decoration(TextDecoration.ITALIC, false);
+                            lore.add(Component.text("This fish has not been caught yet").decoration(TextDecoration.ITALIC, false));
+                        }
                     }
 
                     item = ItemBuilder.from(item)
@@ -144,7 +164,17 @@ public class RarityGUI {
     private void processCustomItem(ConfigurationSection itemConfig, Gui gui, int rows,
                                    Set<Integer> occupiedSlots, String configKey) {
         try {
-            int slot = itemConfig.getInt("slot");
+            List<Integer> slots;
+            if (itemConfig.isString("slot")) { // Check if "slot" is a comma-separated string
+                String slotString = itemConfig.getString("slot");
+                slots = Arrays.stream(slotString.split(","))
+                        .map(String::trim)
+                        .map(Integer::parseInt)
+                        .toList();
+            } else {
+                slots = Collections.singletonList(itemConfig.getInt("slot")); // Fallback for single slot
+            }
+
             String materialName = itemConfig.getString("material", "STONE");
             String name = itemConfig.getString("display-name", "<white>Custom Item");
             List<String> loreListRaw = itemConfig.getStringList("lore");
@@ -166,11 +196,13 @@ public class RarityGUI {
                     .lore(loreList)
                     .build();
 
-            if (slot >= 0 && slot < rows * 9 && !occupiedSlots.contains(slot)) {
-                gui.setItem(slot, new GuiItem(item, event -> event.setCancelled(true)));
-                occupiedSlots.add(slot);
-            } else {
-                plugin.getLogger().warning("Invalid or occupied slot in " + configKey + ": " + slot);
+            for (int slot : slots) {
+                if (slot >= 0 && slot < rows * 9 && !occupiedSlots.contains(slot)) {
+                    gui.setItem(slot, new GuiItem(item, event -> event.setCancelled(true)));
+                    occupiedSlots.add(slot);
+                } else {
+                    plugin.getLogger().warning("Invalid or occupied slot in " + configKey + ": " + slot);
+                }
             }
         } catch (Exception e) {
             plugin.getLogger().severe("Error loading custom item " + configKey + ": " + e.getMessage());
